@@ -1,0 +1,137 @@
+---
+title: "Class 5: Data Visualization with ggplot"
+author: "Deborah Sigaud Kutner (PID: A69027018)"
+date: 01/24/24
+format: pdf
+---
+
+# Graphic systems in R
+
+There are many graphic systems for R, including the so-called *base R* and those in add-on packages like 'ggplot2'. 
+
+## Dataset: cars
+
+```{r}
+head(cars) 
+plot(cars) # Base r plot
+```
+
+Same plot with ggplot2. You need to specify:
+
+- **data** (data.frame)
+- **aesthetics** (how the data map to the plot)
+- **geometry** (type of plot - e.g. line, dots, boxplot, etc.)
+
+```{r , message = FALSE}
+# install.packages("ggplot2") #install package
+library(ggplot2) #load up the package
+p1 <- ggplot(data=cars, aes(x= speed, y=dist)) +
+  geom_point() +
+  geom_smooth()+
+  xlab("Speed") + ylab("Stopping Distance (ft)") + ggtitle("Stopping Distance of Old Cars") +
+  theme_bw()
+
+```
+
+Same plot with a linear regression and no confidence interval.
+
+```{r}
+p2 <- ggplot(data=cars, aes(x= speed, y=dist)) +
+  geom_point() +
+  geom_smooth(method="lm", se=F)+
+  xlab("Speed") + ylab("Stopping Distance (ft)") + ggtitle("Stopping Distance of Old Cars") +
+  theme_bw()
+```
+
+Combining multiple plots in one figure:
+
+```{r , message = FALSE}
+library("patchwork")
+(p1 | p2) / (p1 | p2)  + plot_annotation(tag_levels = 'A')
+```
+
+## Dataset: Genes
+
+```{r}
+url <- "https://bioboot.github.io/bimm143_S20/class-material/up_down_expression.txt"
+genes <- read.delim(url)
+head(genes, 5)
+```
+
+
+```{r}
+# How many genes are in this dataset?
+nrow(genes)
+
+# How many columns did you find?
+ncol(genes)
+colnames(genes)
+
+# How many ‘up’ regulated genes are there?
+table(genes$State) # There are 127 "up"
+
+# What fraction of total genes is up-regulated in this dataset? 
+table(genes$State == "up")/nrow(genes)*100 # 2.44%
+round(table(genes$State)/nrow(genes)*100, 2)
+```
+
+
+
+```{r}
+ggplot(data=genes, aes(x=Condition1, y=Condition2, color = State)) +
+  geom_point() +
+  scale_colour_manual(labels=c("Down", "Unchanging", "Up"), values=c("blue","gray","red") ) +
+  xlab("Control (no drug)") + ylab("Drug treatment") + ggtitle("Gene Expression Changes Upon Drug Treatment") +
+  theme_bw()
+  
+```
+
+```{r , message = FALSE}
+library("plotly") # Won't work in a PDF
+
+# ggplotly(ggplot(data=genes, aes(x=Condition1, y=Condition2, color = State, name = Gene)) +
+#   geom_point() +
+#   scale_colour_manual(labels=c("Down", "Unchanging", "Up"), values=c("blue","gray","red") ) +
+#   xlab("Control (no drug)") + ylab("Drug treatment") + ggtitle("Gene Expression Changes Upon Drug Treatment") +
+#   theme_bw())
+  
+```
+
+## Dataset: gapminder 
+
+```{r , message = FALSE}
+url <- "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv"
+gapminder <- read.delim(url)
+head(gapminder)
+
+library(dplyr)
+
+gapminder_2007 <- gapminder %>% filter(year==2007)
+
+ggplot(data=gapminder_2007) +
+  aes(x= gdpPercap, y=lifeExp, color=continent, size=pop) +
+  geom_point(alpha = 0.5) + #make the dots slightly transparent
+  labs(size = "Population (millions)", color = "Continent", x="GDP per capita", y="Life Expectancy (years)") +
+  theme_bw()
+
+```
+
+## Dataset: USArrests
+
+```{r}
+head(USArrests)
+USArrests$State <- rownames(USArrests)
+
+ggplot(USArrests) +
+  aes(x=reorder(State,Murder), y=Murder) +
+  geom_point() +
+  geom_segment(aes(x=State, 
+                   xend=State, 
+                   y=0, 
+                   yend=Murder), color="blue") +
+  coord_flip() +
+  xlab("State") + ylab("Number of murders") +
+  theme_bw()
+
+```
+
