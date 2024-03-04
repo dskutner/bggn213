@@ -1,0 +1,94 @@
+---
+title: "Class 6: R Functions"
+author: "Deborah Sigaud Kutner (PID: A69027018)"
+date: 01/26/2024
+format: pdf
+---
+
+# First R function
+
+All functions have three parts:
+
+- Name;
+- Input arguments (none, one or more);
+- Body;
+
+A function to add 1 to a number:
+
+```{r}
+sillyadd <- function(x) {
+  x + 1
+}
+
+sillyadd(10)
+
+```
+
+A function to add two numbers:
+
+```{r}
+sillyadd <- function(x, y=1) {   # Default value of y is 1 if the user doesn't specify
+  x + y
+}
+
+sillyadd(10, 3)
+sillyadd(10)
+```
+
+# Lab 6 questions
+
+**Q1. Write a function grade() to determine an overall grade from a vector of student homework assignment scores dropping the lowest single score. If a student misses a homework (i.e. has an NA value) this can be used as a score to be potentially dropped. Your final function should be adequately explained with code comments and be able to work on an example class gradebook such as this one in CSV format: “https://tinyurl.com/gradeinput” [3pts]**
+
+```{r}
+student1 <- c(100, 100, 100, 100, 100, 100, 100, 90)
+student2 <- c(100, NA, 90, 90, 90, 90, 97, 80)
+student3 <- c(100, NA, NA, NA, NA, NA, NA, NA)
+
+grade <- function(x) {                 # x is a vector of grades
+  
+  x[is.na(x)] <- 0                     #transform all NAs in 0
+  mean(x[-which.min(x)], na.rm = T)    #do the mean without the minimum value
+
+}
+
+grade(student1)
+grade(student2)
+grade(student3)
+
+```
+All students:
+
+```{r}
+gradebook <- read.csv("https://tinyurl.com/gradeinput", row.names = 1)
+
+apply(X = gradebook, MARGIN = 1, FUN = grade)
+```
+**Q2. Using your grade() function and the supplied gradebook, Who is the top scoring student overall in the gradebook? [3pts]**
+
+```{r}
+which.max(apply(X = gradebook, MARGIN = 1, FUN = grade))
+```
+The top scoring student was student 18.
+
+**Q3. From your analysis of the gradebook, which homework was toughest on students (i.e. obtained the lowest scores overall? [2pts]**
+
+```{r}
+apply(gradebook, MARGIN = 2, FUN = mean, na.rm = T) # na.rm = T to calculate the mean without considering NA values
+which.min(apply(gradebook, MARGIN = 2, FUN = mean, na.rm = T)) 
+
+```
+
+The toughest homework was number 3, with the lowest mean of 80.8. 
+
+
+**Q4. Optional Extension: From your analysis of the gradebook, which homework was most predictive of overall score (i.e. highest correlation with average grade score)? [1pt]**
+
+```{r}
+mask.gradebook <- gradebook
+mask.gradebook[is.na(mask.gradebook)] <- 0
+grades <- apply(X = gradebook, MARGIN = 1, FUN = grade)
+
+apply(mask.gradebook, 2, FUN = cor, x=grades)
+which.max(apply(mask.gradebook, 2, FUN = cor, x=grades))
+```
+Homework 5 was the most predictive of overall scores, with a correlation of 0.63.

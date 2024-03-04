@@ -1,0 +1,73 @@
+---
+title: "Class 6 - Homework"
+author: "Deborah Sigaud Kutner (PID: A69027018)"
+date: 01/26/2024
+format: pdf
+---
+## Instructions
+
+**Q6. How would you generalize the original code above to work with any set of input protein structures?**
+
+library(bio3d) 
+
+s1 <- read.pdb("4AKE")  # kinase with drug 
+
+s2 <- read.pdb("1AKE")  # kinase no drug 
+
+s3 <- read.pdb("1E4Y")  # kinase with drug 
+
+
+s1.chainA <- trim.pdb(s1, chain="A", elety="CA") 
+
+s2.chainA <- trim.pdb(s2, chain="A", elety="CA") 
+
+s3.chainA <- trim.pdb(s3, chain="A", elety="CA") 
+
+
+s1.b <- s1.chainA$atom$b 
+
+s2.b <- s2.chainA$atom$b 
+
+s3.b <- s3.chainA$atom$b 
+
+
+plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor") 
+
+plotb3(s2.b, sse=s2.chainA, typ="l", ylab="Bfactor") 
+
+plotb3(s3.b, sse=s3.chainA, typ="l", ylab="Bfactor")
+
+
+## Function "protein":
+
+- "code" is the main argument of the function, requiring the PDB filename or the four letter PDB identifier. 
+- "chain", "elety" and "typ" have defaults, but can be changed.
+
+```{r , warning = FALSE}
+
+#install.packages('bio3d') # install package
+library(bio3d) # load library
+
+protein <- function(code, chain = "A", elety="CA", typ="l") {  
+  pdb <- read.pdb(code)                                    
+  # reads the pdb code for the desired protein
+  chain <- trim.pdb(pdb, chain=chain, elety=elety)         
+  # loads the chain information
+  plotb3(chain$atom$b, sse=chain, typ=typ, ylab="Bfactor", main = paste("PDB:", code)) 
+  # returns the plot of B-factor values and PDB residue numbers. 
+  # the type of plot is changeable (e.g. line, points, etc.).
+  }
+
+protein(code = "4AKE") # check if function is working for one code
+
+```
+
+Loading multiple proteins at the same time using the apply function.
+
+```{r , warning= FALSE}
+
+files <- matrix(c("4AKE", "1AKE", "1E4Y"))
+apply((files), 1, protein)
+```
+
+
