@@ -2,7 +2,7 @@
 title: "Class 5: Data Visualization with ggplot"
 author: "Deborah Sigaud Kutner (PID: A69027018)"
 date: 01/24/24
-format: pdf
+format: html
 ---
 
 # Graphic systems in R
