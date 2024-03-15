@@ -3,9 +3,9 @@ Classwork for Winter 2024 [BGGN213 at UC San Diego](https://bioboot.github.io/bg
 
 ## Contents
 
-- Class 5: [Data exploration and visualization in R]()
+- Class 5: [Data exploration and visualization in R](https://github.com/dskutner/bggn213/blob/main/class5/class5.pdf)
   
-- Class 6: [R functions and R packages]()
+- Class 6: [R functions and R packages](https://github.com/dskutner/bggn213/blob/main/class6/class6.md)
 
 - Class 7: [Machine Learning for Bioinformatics 1]()
 
