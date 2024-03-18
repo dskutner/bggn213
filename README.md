@@ -9,5 +9,3 @@ Classwork for Winter 2024 [BGGN213 at UC San Diego](https://bioboot.github.io/bg
 
 - Class 7: [Machine Learning for Bioinformatics 1](https://github.com/dskutner/bggn213/blob/main/class7/class7.md)
 
-- Class 8: [Unsupervised learning mini-project]()
-
